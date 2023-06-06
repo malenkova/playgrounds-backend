@@ -7,6 +7,7 @@ use App\Http\Resources\PlaceResource;
 use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Validator;
 
 class PlaceController extends Controller
 {
@@ -23,6 +24,13 @@ class PlaceController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'address' => 'required|unique:places,address|max:255'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), Response::HTTP_BAD_REQUEST);
+        }
         $place = Place::create($request->only(['name', 'address', 'googlePlaceId', 'image', 'geometry', 'filter']));
         return response()->json(new PlaceResource($place), Response::HTTP_OK);
     }
@@ -40,6 +48,13 @@ class PlaceController extends Controller
      */
     public function update(Request $request, Place $place)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'address' => 'required|unique:places,address|max:255'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), Response::HTTP_BAD_REQUEST);
+        }
         $place->update($request->only(['name', 'address', 'googlePlaceId', 'image', 'geometry', 'filter']));
         return response()->json(new PlaceResource($place), Response::HTTP_OK);
     }

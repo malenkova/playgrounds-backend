@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('places', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('address');
+            $table->string('address')->unique();
             $table->string('googlePlaceId')->default(null)->nullable(true);
             $table->string('image')->default(null)->nullable(true);
             $table->text('geometry')->default(null)->nullable(true);
